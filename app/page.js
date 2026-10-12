@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Organizers from "@/components/Organizers";
 import PotionSmash from "@/components/PotionSmash";
 import Prizes from "@/components/Prizes";
+import PreviousYearMemories from "@/components/PreviousYearMemories";
 import Rules from "@/components/Rules";
 import Sponsors from "@/components/Sponsors";
 import SpookyCreatures from "@/components/SpookyCreatures";
@@ -26,6 +27,7 @@ export default function Home() {
       <Eligibility />
       <Rules />
       <Organizers />
+      <PreviousYearMemories />
       <section className="afterglow bg-transparent" id="registration">
         <div className="afterglow__mark" aria-hidden="true">✳</div>
         <div>

@@ -6,10 +6,10 @@ import { useReducedMotion } from "framer-motion";
 import gsap from "gsap";
 
 const creatures = [
-  { id: "bat-one", kind: "bat", src: "https://tenor.com/p7QdPJG7kCG.gif", fallback: "https://media.tenor.com/uez9lEwcPpgAAAAj/bats-black.gif" },
-  { id: "crow-one", kind: "crow", src: "https://tenor.com/bnw67.gif", fallback: "https://media.tenor.com/a_bwSoIpYBUAAAAj/bird.gif" },
-  { id: "bat-two", kind: "bat", src: "https://tenor.com/p7QdPJG7kCG.gif", fallback: "https://media.tenor.com/uez9lEwcPpgAAAAj/bats-black.gif" },
-  { id: "crow-two", kind: "crow", src: "https://tenor.com/bnw67.gif", fallback: "https://media.tenor.com/a_bwSoIpYBUAAAAj/bird.gif" },
+  { id: "bat-one", kind: "bat", src: "/bats-black.gif" },
+  { id: "crow-one", kind: "crow", src: "/bird.gif" },
+  { id: "bat-two", kind: "bat", src: "/bats-black.gif" },
+  { id: "crow-two", kind: "crow", src: "/bird.gif" },
 ];
 
 const randomBetween = (min, max) => min + Math.random() * (max - min);
@@ -133,7 +133,7 @@ export default function SpookyCreatures() {
     images.forEach((image, index) => {
       const bounds = viewportPoint(image);
       const startX = Math.min(bounds.maxX, 16 + (index % 2) * Math.max(80, bounds.maxX * 0.72));
-      const startY = Math.min(bounds.maxY, 22 + Math.floor(index / 2) * Math.max(70, bounds.maxY * 0.58));
+      const startY = -bounds.height - randomBetween(12, 48);
       gsap.set(image, { x: startX, y: startY, scaleX: index % 2 ? -1 : 1, opacity: 1 });
       states.set(image, { mode: "flying", timer: null, spot: null });
     });
@@ -178,23 +178,16 @@ export default function SpookyCreatures() {
   }, [reducedMotion]);
 
   return (
-    <div className="spooky-creatures fixed inset-0 pointer-events-none z-50 overflow-hidden" aria-hidden="true">
+    <div className="spooky-creatures fixed inset-0 pointer-events-none z-[9001] overflow-hidden" aria-hidden="true">
       {creatures.map((creature, index) => (
         <img
           key={creature.id}
           ref={(image) => { imagesRef.current[index] = image; }}
           className={`spooky-creature spooky-creature--${creature.kind} absolute w-24 sm:w-28 md:w-32`}
           src={creature.src}
-          data-tenor-url={creature.src}
-          data-fallback-src={creature.fallback}
           alt=""
           draggable="false"
           decoding="async"
-          onError={(event) => {
-            const image = event.currentTarget;
-            const fallback = image.dataset.fallbackSrc;
-            if (fallback && image.src !== fallback) image.src = fallback;
-          }}
         />
       ))}
     </div>

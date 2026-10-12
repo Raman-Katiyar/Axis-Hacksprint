@@ -52,11 +52,21 @@ export default function Footer() {
           {links.map((link) => <a href={link.href} key={link.href}>{link.label}</a>)}
         </nav>
 
-        <img
-          src="/axis-logo.png"
-          alt="Axis Institute of Technology and Management"
-          className="h-16 w-16 mx-auto mb-4 rounded-full object-cover opacity-90 hover:opacity-100 transition-opacity"
-        />
+        <div className="mx-auto mb-4 flex w-fit max-w-full flex-wrap items-center justify-center gap-4 sm:gap-6">
+          <img
+            src="/original%20logo.png"
+            alt="Axis Institute of Technology & Management logo"
+            className="h-auto w-40 max-w-[42vw] object-contain opacity-90 transition-opacity hover:opacity-100 sm:w-48"
+          />
+          <span className="text-xl font-semibold text-white/80 sm:text-2xl" aria-label="in collaboration with">
+            ×
+          </span>
+          <img
+            src="/snganak%20shila.jpeg"
+            alt="Sanganak Shila logo"
+            className="h-auto w-28 max-w-[32vw] object-contain opacity-90 transition-opacity hover:opacity-100 sm:w-36"
+          />
+        </div>
         <p className="site-footer__tagline">Iterate • Accelerate • Elevate <span>-</span> Axis Institute of Technology &amp; Management</p>
         <p className="site-footer__copyright">© 2026 Axis HackSprint 2.0. All Spells Reserved.</p>
       </div>
