@@ -374,6 +374,10 @@ body { margin: 0; background: var(--night); color: #FFFFFF; font-family: var(--f
   .hero__footer-note { max-width: 170px; }
 }
 
+@media (min-width: 901px) {
+  .hero__copy { transform: translateY(46px); }
+}
+
 @media (max-width: 620px) {
   body { text-shadow: none; }
   .hero { min-height: 760px; height: auto; max-height: none; }
