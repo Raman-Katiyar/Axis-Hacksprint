@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import SpookyCreatures from "@/components/SpookyCreatures";
 
 const mediaItems = [
   { src: "/DSC_3378.jpg.jpeg", type: "image", alt: "Hackathon memory 01" },
@@ -22,7 +21,6 @@ export default function MemoriesPage() {
     <main className="relative min-h-screen overflow-hidden px-4 py-10 text-white sm:px-6 lg:px-8">
       <div className="fixed inset-0 -z-20 bg-[url('/bg-wonderland.png')] bg-cover bg-center bg-no-repeat" aria-hidden="true" />
       <div className="fixed inset-0 -z-10 bg-black/20 backdrop-blur-[1px]" aria-hidden="true" />
-      <SpookyCreatures />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         <header className="mb-10 flex flex-col gap-5 border-b border-white/10 pb-6 sm:flex-row sm:items-end sm:justify-between">

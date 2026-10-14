@@ -12,11 +12,11 @@ const links = [
   { label: "Prizes", href: "#prizes" },
   { label: "Rules", href: "#rules" },
   { label: "FAQ", href: "#faq" },
-  { label: "Organisers", href: "/organisers", featured: true },
+  { label: "Organisers", href: "/organisers" },
 ];
 
 const linkClassName = "relative group text-gray-300 text-xs md:text-sm uppercase tracking-[0.2em] font-semibold transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,105,180,1)]";
-const featuredLinkClassName = "rounded-full border border-pink-400/50 bg-pink-600/20 px-3 py-2 text-white shadow-[0_0_16px_rgba(255,0,60,0.25)] hover:bg-pink-600/35";
+const activeLinkClassName = "text-white drop-shadow-[0_0_12px_rgba(255,105,180,0.85)]";
 const indicatorClassName = "absolute -bottom-2 left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full bg-pink-500 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:shadow-[0_0_10px_#ec4899]";
 
 function scrollToSection(section) {
@@ -30,9 +30,48 @@ function scrollToSection(section) {
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const [currentSectionHref, setCurrentSectionHref] = useState("#home");
   const pathname = usePathname();
   const router = useRouter();
+  const activeHref = pathname === "/organisers" ? "/organisers" : pathname === "/" ? currentSectionHref : "";
   const getHref = (href) => href.startsWith("#") && pathname !== "/" ? `/${href}` : href;
+
+  useEffect(() => {
+    if (pathname !== "/") return undefined;
+
+    function updateActiveSection() {
+      const marker = window.innerHeight * 0.35;
+      let currentHref = "#home";
+
+      links.forEach((link) => {
+        if (!link.href.startsWith("#")) return;
+        const section = document.getElementById(link.href.slice(1));
+        if (section && section.getBoundingClientRect().top <= marker) {
+          currentHref = link.href;
+        }
+      });
+
+      setCurrentSectionHref((previousHref) => previousHref === currentHref ? previousHref : currentHref);
+    }
+
+    let frameId = 0;
+    function handleScroll() {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        updateActiveSection();
+        frameId = 0;
+      });
+    }
+
+    updateActiveSection();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+      if (frameId) window.cancelAnimationFrame(frameId);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     if (pathname !== "/") return undefined;
@@ -57,6 +96,7 @@ export default function Header() {
 
     event.preventDefault();
     const section = href.slice(1);
+    setCurrentSectionHref(href);
 
     if (pathname !== "/") {
       window.sessionStorage.setItem("axis-hacksprint-entered", "true");
@@ -100,13 +140,14 @@ export default function Header() {
       >
         {links.map((link) => (
           <Link
-            className={`${linkClassName} ${link.featured ? featuredLinkClassName : ""}`}
+            className={`${linkClassName} ${activeHref === link.href ? activeLinkClassName : ""}`}
             href={getHref(link.href)}
             key={link.href}
+            aria-current={activeHref === link.href ? (link.href.startsWith("#") ? "location" : "page") : undefined}
             onClick={(event) => handleNavigation(event, link.href)}
           >
             {link.label}
-            <span className={indicatorClassName} aria-hidden="true" />
+            <span className={`${indicatorClassName} ${activeHref === link.href ? "opacity-100 shadow-[0_0_10px_#ec4899]" : ""}`} aria-hidden="true" />
           </Link>
         ))}
       </nav>
@@ -137,13 +178,14 @@ export default function Header() {
             <nav className="flex flex-col lg:hidden" aria-label="Mobile navigation">
               {links.map((link) => (
                 <Link
-                  className={`${linkClassName} ${link.featured ? `my-2 w-fit ${featuredLinkClassName}` : "border-b border-white/10 py-4 last:border-b-0"}`}
+                  className={`${linkClassName} ${activeHref === link.href ? activeLinkClassName : ""} ${link.href === "/organisers" ? "my-2 w-fit" : "border-b border-white/10 py-4 last:border-b-0"}`}
                   href={getHref(link.href)}
                   key={link.href}
+                  aria-current={activeHref === link.href ? (link.href.startsWith("#") ? "location" : "page") : undefined}
                   onClick={(event) => handleNavigation(event, link.href)}
                 >
                   {link.label}
-                  <span className={indicatorClassName} aria-hidden="true" />
+                  <span className={`${indicatorClassName} ${activeHref === link.href ? "opacity-100 shadow-[0_0_10px_#ec4899]" : ""}`} aria-hidden="true" />
                 </Link>
               ))}
             </nav>

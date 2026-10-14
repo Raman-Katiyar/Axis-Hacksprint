@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 156" fill="none">
+  <defs>
+    <linearGradient id="shell" x1="34" y1="25" x2="91" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#71489C"/>
+      <stop offset="1" stop-color="#21152F"/>
+    </linearGradient>
+    <linearGradient id="visor" x1="41" y1="36" x2="79" y2="63" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#102C48"/>
+      <stop offset="1" stop-color="#140E24"/>
+    </linearGradient>
+    <filter id="glow" x="0" y="0" width="120" height="156" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <ellipse cx="60" cy="147" rx="26" ry="5" fill="#C239FF" opacity=".45" filter="url(#glow)"/>
+  <path d="M60 20V10" stroke="#E7D0FF" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="60" cy="8" r="5" fill="#FF63B3"/>
+  <circle cx="60" cy="8" r="9" fill="#FF63B3" opacity=".22"/>
+  <path d="M30 43H20V61H31M90 43h10V61H89" fill="#372343" stroke="#D7AEFF" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="30" y="25" width="60" height="54" rx="17" fill="url(#shell)" stroke="#E1BDFF" stroke-width="2.5"/>
+  <rect x="38" y="36" width="44" height="28" rx="10" fill="url(#visor)" stroke="#A979D3" stroke-width="1.5"/>
+  <circle cx="50" cy="49" r="4" fill="#8DF9FF"/>
+  <circle cx="70" cy="49" r="4" fill="#8DF9FF"/>
+  <path d="M52 57q8 7 16 0" stroke="#F7C9FF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M54 80v6m12-6v6" stroke="#E1BDFF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M37 91q0-5 5-5h36q5 0 5 5v32H37V91Z" fill="url(#shell)" stroke="#D7AEFF" stroke-width="2.5"/>
+  <rect x="47" y="95" width="26" height="19" rx="4" fill="#140E24" stroke="#8DF9FF" stroke-opacity=".8"/>
+  <circle cx="54" cy="104" r="2.5" fill="#FF68B5"/>
+  <circle cx="60" cy="104" r="2.5" fill="#AA7BFF"/>
+  <circle cx="66" cy="104" r="2.5" fill="#8DF9FF"/>
+  <path d="m37 93-13 12-4-17m63 5 13 12 4-17" stroke="#E1BDFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M47 123v14m26-14v14" stroke="#C6A3E7" stroke-width="6" stroke-linecap="round"/>
+  <path d="M41 139h14m10 0h14" stroke="#FF9BC9" stroke-width="5" stroke-linecap="round"/>
+</svg>

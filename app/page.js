@@ -8,9 +8,10 @@ import Organizers from "@/components/Organizers";
 import PotionSmash from "@/components/PotionSmash";
 import Prizes from "@/components/Prizes";
 import PreviousYearMemories from "@/components/PreviousYearMemories";
+import RobotInvite from "@/components/RobotInvite";
 import Rules from "@/components/Rules";
 import Sponsors from "@/components/Sponsors";
-import SpookyCreatures from "@/components/SpookyCreatures";
+import TechCompanions from "@/components/TechCompanions";
 import Timeline from "@/components/Timeline";
 import Tracks from "@/components/Tracks";
 
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <main className="bg-transparent">
       <CinematicPreloader />
+      <TechCompanions />
       <Header />
       <div className="fixed inset-0 w-full h-full -z-50 bg-[url('/bg-wonderland.png')] bg-cover bg-center bg-no-repeat" aria-hidden="true" />
       <Hero />
@@ -43,7 +45,7 @@ export default function Home() {
       <Sponsors />
       <FAQ />
       <Footer />
-      <SpookyCreatures />
+      <RobotInvite />
       <PotionSmash />
     </main>
   );

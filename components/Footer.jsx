@@ -69,6 +69,7 @@ export default function Footer() {
         </div>
         <p className="site-footer__tagline">Iterate • Accelerate • Elevate <span>-</span> Axis Institute of Technology &amp; Management</p>
         <p className="site-footer__copyright">© 2026 Axis HackSprint 2.0. All Spells Reserved.</p>
+        <p className="site-footer__credit">Crafted with care by <span>Raman Katiyar</span> <i aria-hidden="true">×</i> <span>Naman Katiyar</span></p>
       </div>
     </motion.footer>
   );

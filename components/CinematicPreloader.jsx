@@ -3,51 +3,65 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { usePathname } from "next/navigation";
+import TechCompanions from "./TechCompanions";
+
+const SITE_REVEAL_LEAD_TIME = 0.5;
+
+function drawBackdropFrame(video, canvas) {
+  if (!canvas || video.readyState < 2 || !video.videoWidth || !video.videoHeight) return;
+
+  const width = Math.min(video.videoWidth, 960);
+  const height = Math.round(video.videoHeight * (width / video.videoWidth));
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width;
+    canvas.height = height;
+  }
+
+  canvas.getContext("2d")?.drawImage(video, 0, 0, width, height);
+}
 
 export default function CinematicPreloader() {
   const pathname = usePathname();
   const [isEntered, setIsEntered] = useState(false);
   const [stage, setStage] = useState("ready");
   const [playbackError, setPlaybackError] = useState("");
-  const curtainVideoRef = useRef(null);
-  const wizardVideoRef = useRef(null);
+  const introVideoRef = useRef(null);
+  const backdropCanvasRef = useRef(null);
+  const introRevealStartedRef = useRef(false);
   const reducedMotion = useReducedMotion();
 
   function handleEnterClick() {
     if (stage !== "ready") return;
+
     setPlaybackError("");
-    setStage("curtain");
-    const video = curtainVideoRef.current;
+    introRevealStartedRef.current = false;
+    setStage("inshot");
+    const video = introVideoRef.current;
     if (!video) {
-      setPlaybackError("The curtain video is unavailable. Please try again.");
+      setPlaybackError("The InShot video is unavailable. Please try again.");
       setStage("ready");
       return;
     }
 
+    video.currentTime = 0;
     video.play().catch(() => {
-      setPlaybackError("The curtain video could not be played. Please try again.");
+      setPlaybackError("The InShot video could not be played. Please try again.");
       setStage("ready");
     });
   }
 
-  function handleCurtainEnded() {
-    setPlaybackError("");
-    setStage("wizard");
-    const video = wizardVideoRef.current;
-    if (!video) {
-      setPlaybackError("The wizard spell video is unavailable. Please try again.");
-      return;
-    }
+  function handleIntroEnded() {
+    if (introRevealStartedRef.current) return;
 
-    video.play().catch(() => {
-      setPlaybackError("The wizard spell video could not be played. Please try again.");
-    });
-  }
-
-  function handleWizardEnded() {
+    introRevealStartedRef.current = true;
     window.sessionStorage.setItem("axis-hacksprint-entered", "true");
-    document.documentElement.classList.add("axis-hacksprint-entered");
     setIsEntered(true);
+  }
+
+  function handleIntroTimeUpdate(event) {
+    const video = event.currentTarget;
+    drawBackdropFrame(video, backdropCanvasRef.current);
+    if (video.duration - video.currentTime <= SITE_REVEAL_LEAD_TIME) handleIntroEnded();
   }
 
   function handleRetry() {
@@ -57,7 +71,7 @@ export default function CinematicPreloader() {
       return;
     }
 
-    const video = stage === "curtain" ? curtainVideoRef.current : wizardVideoRef.current;
+    const video = introVideoRef.current;
     if (!video) {
       setPlaybackError("The video is unavailable. Please try again.");
       return;
@@ -71,6 +85,21 @@ export default function CinematicPreloader() {
   function handleVideoError(videoName) {
     setPlaybackError(`The ${videoName} video could not be loaded. Please try again.`);
   }
+
+  useEffect(() => {
+    const video = introVideoRef.current;
+    const canvas = backdropCanvasRef.current;
+    if (!video || !canvas) return undefined;
+
+    const updateBackdrop = () => drawBackdropFrame(video, canvas);
+    if (video.readyState >= 2) {
+      updateBackdrop();
+    } else {
+      video.addEventListener("loadeddata", updateBackdrop);
+    }
+
+    return () => video.removeEventListener("loadeddata", updateBackdrop);
+  }, []);
 
   useEffect(() => {
     function skipIntro() {
@@ -95,37 +124,42 @@ export default function CinematicPreloader() {
       className={`cinematic-preloader fixed inset-0 z-[10000] flex items-center justify-center bg-black ${isEntered ? "pointer-events-none" : "pointer-events-auto"}`}
       initial={{ opacity: 1 }}
       animate={{ opacity: isEntered ? 0 : 1 }}
-      transition={{ duration: 1 }}
+      transition={{ duration: reducedMotion ? 0.35 : SITE_REVEAL_LEAD_TIME, ease: "easeInOut" }}
+      onAnimationComplete={() => {
+        if (isEntered) {
+          document.documentElement.classList.add("axis-hacksprint-entered");
+          introVideoRef.current?.pause();
+        }
+      }}
       aria-hidden={isEntered}
     >
-      {!isEntered && (
+      {(!isEntered || stage === "inshot") && (
         <>
+          <canvas
+            ref={backdropCanvasRef}
+            className={`absolute inset-0 z-[1] h-full w-full scale-110 object-cover blur-3xl transition-opacity duration-500 ease-in-out ${isEntered ? "opacity-0" : "opacity-60"}`}
+            aria-hidden="true"
+          />
           <video
-            ref={curtainVideoRef}
-            className={`absolute inset-0 h-full w-full object-cover ${stage === "wizard" ? "hidden" : ""}`}
-            src="/curtain.mp4"
+            ref={introVideoRef}
+            className={`absolute left-1/2 top-1/2 z-[2] h-auto w-auto max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain transition-opacity duration-500 ease-in-out ${isEntered ? "pointer-events-none opacity-0" : "opacity-100"}`}
+            src="/InShot_20261015_010452538.mp4"
             playsInline
             preload="auto"
             aria-hidden="true"
-            onEnded={handleCurtainEnded}
-            onError={() => handleVideoError("curtain")}
+            onTimeUpdate={handleIntroTimeUpdate}
+            onEnded={handleIntroEnded}
+            onError={() => handleVideoError("InShot")}
           />
-          <video
-            ref={wizardVideoRef}
-            className={`absolute inset-0 h-full w-full object-cover ${stage === "wizard" ? "" : "hidden"}`}
-            src="/wizard-spell.mp4"
-            playsInline
-            preload="none"
-            aria-hidden="true"
-            onEnded={handleWizardEnded}
-            onError={() => handleVideoError("wizard spell")}
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/20"
-            aria-hidden="true"
-          />
+          <TechCompanions intro />
           {stage === "ready" && (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-end overflow-hidden px-4 pb-16 md:pb-24">
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/20"
+              aria-hidden="true"
+            />
+          )}
+          {stage === "ready" && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden px-4">
               <motion.button
                 type="button"
                 className="relative z-10 max-w-[calc(100vw-2rem)] cursor-pointer rounded-full border border-pink-500/80 bg-black/60 px-6 py-4 text-center text-lg font-bold uppercase tracking-[0.3em] text-white backdrop-blur-md transition-colors hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-10 sm:text-xl md:text-2xl"
@@ -138,13 +172,13 @@ export default function CinematicPreloader() {
                 }}
                 transition={reducedMotion ? { duration: 0 } : { duration: 1.5, repeat: Infinity }}
               >
-                OPEN THE CURTAIN
+                Enter the Wonderland
               </motion.button>
             </div>
           )}
           {stage !== "ready" && !playbackError && (
             <p className="sr-only" aria-live="polite">
-              {stage === "curtain" ? "Opening the curtain." : "The wizard spell is playing."}
+              The InShot video is playing.
             </p>
           )}
           {playbackError && (

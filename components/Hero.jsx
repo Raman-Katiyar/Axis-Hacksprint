@@ -18,6 +18,7 @@ function getTimeLeft() {
 
 function Countdown() {
   const [timeLeft, setTimeLeft] = useState(null);
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     const initialUpdate = window.setTimeout(() => setTimeLeft(getTimeLeft()), 0);
@@ -53,6 +54,16 @@ function Countdown() {
 
             return (
               <div className={`countdown__unit countdown__unit--${key}`} key={key}>
+                {(key === "seconds" || key === "hours") && (
+                  <motion.img
+                    className={`countdown__robot countdown__robot--${key}`}
+                    src="/robot-companion.svg"
+                    alt=""
+                    aria-hidden="true"
+                    animate={shouldReduceMotion ? undefined : { y: [-3, 3, -3] }}
+                    transition={shouldReduceMotion ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                )}
                 <div className="countdown__unit-inner">
                   <span className="countdown__rune" aria-hidden="true">{rune}</span>
                   <AnimatePresence mode="wait" initial={false}>
@@ -123,13 +134,16 @@ export default function Hero() {
             <motion.h1
               className="hero__title landing-spot"
               id="hero-title"
+              aria-label="Welcome to Axis HackSprint 2.o"
               variants={titleVariants}
               initial={shouldReduceMotion ? false : "hidden"}
               animate="visible"
             >
+              <motion.span className="hero__title-welcome" variants={lineVariants}>Welcome to</motion.span>
               <motion.span variants={lineVariants}>Axis</motion.span>
-              <motion.span className="hero__title-accent" variants={lineVariants}>HackSprint</motion.span>
-              <motion.span variants={lineVariants}>2.0</motion.span>
+              <motion.span className="hero__title-accent" variants={lineVariants}>
+                <span className="hero__title-event">HackSprint <span className="hero__title-edition">2.o</span></span>
+              </motion.span>
             </motion.h1>
             <motion.p
               className="hero__tagline"

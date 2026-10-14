@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
-import SpookyCreatures from "@/components/SpookyCreatures";
 
 export const metadata = {
   title: "Organisers | Axis HackSprint 2.0",
@@ -28,7 +27,6 @@ export default function OrganisersPage() {
         aria-hidden="true"
       />
       <div className="fixed inset-0 -z-10 bg-black/20 backdrop-blur-[1px]" aria-hidden="true" />
-      <SpookyCreatures />
 
       <section className="organizers bg-transparent" aria-labelledby="organisers-title">
         <div className="organizers__inner">
