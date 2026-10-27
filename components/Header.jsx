@@ -12,7 +12,6 @@ const links = [
   { label: "Prizes", href: "#prizes" },
   { label: "Rules", href: "#rules" },
   { label: "FAQ", href: "#faq" },
-  { label: "Organisers", href: "/organisers" },
 ];
 
 const linkClassName = "relative group text-gray-300 text-xs md:text-sm uppercase tracking-[0.2em] font-semibold transition-all duration-300 hover:text-white hover:drop-shadow-[0_0_12px_rgba(255,105,180,1)]";
@@ -33,7 +32,7 @@ export default function Header() {
   const [currentSectionHref, setCurrentSectionHref] = useState("#home");
   const pathname = usePathname();
   const router = useRouter();
-  const activeHref = pathname === "/organisers" ? "/organisers" : pathname === "/" ? currentSectionHref : "";
+  const activeHref = pathname === "/" ? currentSectionHref : "";
   const getHref = (href) => href.startsWith("#") && pathname !== "/" ? `/${href}` : href;
 
   useEffect(() => {
